@@ -7,6 +7,7 @@ import sqlite3
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
+import requests
 
 import pandas as pd
 import streamlit as st
