@@ -278,23 +278,27 @@ init_database()
 api_key = get_api_key()
 # TEMP TEST: verify that Streamlit can authenticate with OpenRouter
 if api_key:
-    test_response = requests.get(
-        "https://openrouter.ai/api/v1/models",
+    test_response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
         headers={
-            "Authorization": f"Bearer {api_key}"
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": "qwen/qwen3-vl-32b-instruct",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": "Reply only with OK"
+                }
+            ],
+            "temperature": 0
         },
         timeout=30
     )
 
-    st.write("OpenRouter auth test:", test_response.status_code)
-
-    if not test_response.ok:
-        st.error(test_response.text)
-if not api_key:
-    st.warning(
-        "OpenRouter API key is not configured yet. "
-        "Add OPENROUTER_API_KEY to Streamlit secrets or your environment."
-    )
+    st.write("OpenRouter generation test:", test_response.status_code)
+    st.code(test_response.text)
 
 uploaded_pdf = st.file_uploader(
     "Upload flyer PDF",
