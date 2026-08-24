@@ -123,21 +123,21 @@ def _post_openrouter(
 
     started = time.time()
     response = requests.post(
-    OPENROUTER_URL,
-    headers=headers,
-    json=payload,
-    timeout=timeout,
-)
-
-latency = time.time() - started
-
-# NEW: show the actual OpenRouter error instead of only HTTPError
-if not response.ok:
-    raise RuntimeError(
-        f"OpenRouter error {response.status_code}: {response.text}"
+        OPENROUTER_URL,
+        headers=headers,
+        json=payload,
+        timeout=timeout,
     )
+    latency = time.time() - started
 
-return response.json(), latency
+    # CHANGED: show OpenRouter's real API error instead of a generic HTTPError.
+    if not response.ok:
+        raise RuntimeError(
+            f"OpenRouter error {response.status_code}: {response.text}"
+        )
+
+    return response.json(), latency
+
 
 def render_pdf(
     pdf_path: str | Path,
