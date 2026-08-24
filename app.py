@@ -275,7 +275,20 @@ def save_review(
 init_database()
 
 api_key = get_api_key()
+# TEMP TEST: verify that Streamlit can authenticate with OpenRouter
+if api_key:
+    test_response = requests.get(
+        "https://openrouter.ai/api/v1/models",
+        headers={
+            "Authorization": f"Bearer {api_key}"
+        },
+        timeout=30
+    )
 
+    st.write("OpenRouter auth test:", test_response.status_code)
+
+    if not test_response.ok:
+        st.error(test_response.text)
 if not api_key:
     st.warning(
         "OpenRouter API key is not configured yet. "
